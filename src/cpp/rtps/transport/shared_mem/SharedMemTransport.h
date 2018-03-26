@@ -50,7 +50,8 @@ public:
 
     const SharedMemTransportDescriptor* configuration() const;
 
-    bool init() override;
+    bool init(
+            const fastrtps::rtps::PropertyPolicy* properties = nullptr) override;
 
     virtual ~SharedMemTransport() override;
 
@@ -113,7 +114,10 @@ public:
     bool is_local_locator(
             const fastrtps::rtps::Locator_t& locator) const override;
 
-    TransportDescriptorInterface* get_configuration() override { return &configuration_; }
+    TransportDescriptorInterface* get_configuration() override
+    {
+        return &configuration_;
+    }
 
     void AddDefaultOutputLocator(
             fastrtps::rtps::LocatorList_t& defaultList) override;
@@ -214,7 +218,7 @@ private:
 
     std::shared_ptr<SharedMemManager::Segment> shared_mem_segment_;
 
-    std::shared_ptr<PacketsLog<SHMPacketFileConsumer>> packet_logger_;
+    std::shared_ptr<PacketsLog<SHMPacketFileConsumer> > packet_logger_;
 
     friend class SharedMemChannelResource;
 
@@ -244,7 +248,7 @@ private:
 
     std::shared_ptr<SharedMemManager::Port> find_port(
             uint32_t port_id);
-    
+
     bool push_discard(
             const std::shared_ptr<SharedMemManager::Buffer>& buffer,
             const fastrtps::rtps::Locator_t& remote_locator);
