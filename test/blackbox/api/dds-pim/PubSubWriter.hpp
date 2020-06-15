@@ -315,7 +315,6 @@ public:
                     std::cout << "Created datawriter " << datawriter_guid_ << " for topic " <<
                         topic_name_ << std::endl;
                     initialized_ = datawriter_->is_enabled();
-                    return;
                 }
             }
             if (publisher_ != nullptr)

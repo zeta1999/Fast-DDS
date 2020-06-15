@@ -56,7 +56,7 @@ private:
 
     class ParticipantListener : public eprosima::fastrtps::ParticipantListener
     {
-public:
+    public:
 
         ParticipantListener(
                 PubSubReader& reader)
@@ -103,7 +103,6 @@ public:
             }
         }
 
-
 #if HAVE_SECURITY
         void onParticipantAuthentication(
                 eprosima::fastrtps::Participant*,
@@ -119,19 +118,20 @@ public:
             }
         }
 
-#endif
+#endif // if HAVE_SECURITY
 
-private:
+    private:
 
         ParticipantListener& operator =(
                 const ParticipantListener&) = delete;
         PubSubReader& reader_;
 
-    } participant_listener_;
+    }
+    participant_listener_;
 
     class Listener : public eprosima::fastrtps::SubscriberListener
     {
-public:
+    public:
 
         Listener(
                 PubSubReader& reader)
@@ -209,7 +209,7 @@ public:
             return times_deadline_missed_;
         }
 
-private:
+    private:
 
         Listener& operator =(
                 const Listener&) = delete;
@@ -219,7 +219,8 @@ private:
         //! Number of times deadline was missed
         unsigned int times_deadline_missed_;
 
-    } listener_;
+    }
+    listener_;
 
     friend class Listener;
 
@@ -246,7 +247,7 @@ public:
 #if HAVE_SECURITY
         , authorized_(0)
         , unauthorized_(0)
-#endif
+#endif // if HAVE_SECURITY
         , liveliness_mutex_()
         , liveliness_cv_()
         , times_liveliness_lost_(0)
@@ -352,17 +353,19 @@ public:
 
     void block_for_all()
     {
-        block([this]() -> bool {
-            return number_samples_expected_ == current_received_count_;
-        });
+        block([this]() -> bool
+                {
+                    return number_samples_expected_ == current_received_count_;
+                });
     }
 
     size_t block_for_at_least(
             size_t at_least)
     {
-        block([this, at_least]() -> bool {
-            return current_received_count_ >= at_least;
-        });
+        block([this, at_least]() -> bool
+                {
+                    return current_received_count_ >= at_least;
+                });
         return current_received_count_;
     }
 
@@ -380,9 +383,10 @@ public:
             const std::chrono::duration<_Rep, _Period>& max_wait)
     {
         std::unique_lock<std::mutex> lock(mutex_);
-        cv_.wait_for(lock, max_wait, [this]() -> bool {
-            return number_samples_expected_ == current_received_count_;
-        });
+        cv_.wait_for(lock, max_wait, [this]() -> bool
+                {
+                    return number_samples_expected_ == current_received_count_;
+                });
 
         return current_received_count_;
     }
@@ -396,15 +400,17 @@ public:
 
         if (timeout == std::chrono::seconds::zero())
         {
-            cvDiscovery_.wait(lock, [&](){
-                return matched_ != 0;
-            });
+            cvDiscovery_.wait(lock, [&]()
+                    {
+                        return matched_ != 0;
+                    });
         }
         else
         {
-            cvDiscovery_.wait_for(lock, timeout, [&](){
-                return matched_ != 0;
-            });
+            cvDiscovery_.wait_for(lock, timeout, [&]()
+                    {
+                        return matched_ != 0;
+                    });
         }
 
         std::cout << "Reader discovery finished..." << std::endl;
@@ -420,15 +426,17 @@ public:
 
         if (timeout == std::chrono::seconds::zero())
         {
-            cvDiscovery_.wait(lock, [&](){
-                return participant_matched_ == 0;
-            });
+            cvDiscovery_.wait(lock, [&]()
+                    {
+                        return participant_matched_ == 0;
+                    });
         }
         else
         {
-            if (!cvDiscovery_.wait_for(lock, timeout, [&](){
-                return participant_matched_ == 0;
-            }))
+            if (!cvDiscovery_.wait_for(lock, timeout, [&]()
+                    {
+                        return participant_matched_ == 0;
+                    }))
             {
                 ret_value = false;
             }
@@ -452,9 +460,10 @@ public:
 
         std::cout << "Reader is waiting removal..." << std::endl;
 
-        cvDiscovery_.wait(lock, [&](){
-            return matched_ == 0;
-        });
+        cvDiscovery_.wait(lock, [&]()
+                {
+                    return matched_ == 0;
+                });
 
         std::cout << "Reader removal finished..." << std::endl;
     }
@@ -464,9 +473,10 @@ public:
     {
         std::unique_lock<std::mutex> lock(liveliness_mutex_);
 
-        liveliness_cv_.wait(lock, [&](){
-            return times_liveliness_recovered_ >= times;
-        });
+        liveliness_cv_.wait(lock, [&]()
+                {
+                    return times_liveliness_recovered_ >= times;
+                });
     }
 
     void wait_liveliness_lost(
@@ -474,9 +484,10 @@ public:
     {
         std::unique_lock<std::mutex> lock(liveliness_mutex_);
 
-        liveliness_cv_.wait(lock, [&](){
-            return times_liveliness_lost_ >= times;
-        });
+        liveliness_cv_.wait(lock, [&]()
+                {
+                    return times_liveliness_lost_ >= times;
+                });
     }
 
 #if HAVE_SECURITY
@@ -486,9 +497,10 @@ public:
 
         std::cout << "Reader is waiting authorization..." << std::endl;
 
-        cvAuthentication_.wait(lock, [&]() -> bool {
-            return authorized_ > 0;
-        });
+        cvAuthentication_.wait(lock, [&]() -> bool
+                {
+                    return authorized_ > 0;
+                });
 
         std::cout << "Reader authorization finished..." << std::endl;
     }
@@ -499,14 +511,15 @@ public:
 
         std::cout << "Reader is waiting unauthorization..." << std::endl;
 
-        cvAuthentication_.wait(lock, [&]() -> bool {
-            return unauthorized_ > 0;
-        });
+        cvAuthentication_.wait(lock, [&]() -> bool
+                {
+                    return unauthorized_ > 0;
+                });
 
         std::cout << "Reader unauthorization finished..." << std::endl;
     }
 
-#endif
+#endif // if HAVE_SECURITY
 
     size_t getReceivedCount() const
     {
@@ -938,9 +951,10 @@ public:
 
         std::cout << "Reader is waiting discovery result..." << std::endl;
 
-        cvDiscovery_.wait(lock, [&](){
-            return discovery_result_;
-        });
+        cvDiscovery_.wait(lock, [&]()
+                {
+                    return discovery_result_;
+                });
 
         std::cout << "Reader gets discovery result..." << std::endl;
     }
@@ -1109,7 +1123,7 @@ private:
         cvAuthentication_.notify_all();
     }
 
-#endif
+#endif // if HAVE_SECURITY
 
     PubSubReader& operator =(
             const PubSubReader&) = delete;
@@ -1146,7 +1160,7 @@ private:
     std::condition_variable cvAuthentication_;
     unsigned int authorized_;
     unsigned int unauthorized_;
-#endif
+#endif // if HAVE_SECURITY
 
     //! A mutex for liveliness status
     std::mutex liveliness_mutex_;
