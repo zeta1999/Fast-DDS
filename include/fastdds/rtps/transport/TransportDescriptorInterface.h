@@ -15,6 +15,8 @@
 #ifndef _FASTDDS_TRANSPORT_DESCRIPTOR_INTERFACE_H_
 #define _FASTDDS_TRANSPORT_DESCRIPTOR_INTERFACE_H_
 
+#include <fastrtps/fastrtps_dll.h>
+
 #ifdef _WIN32
 #include <cstdint>
 #endif
@@ -31,7 +33,7 @@ class TransportInterface;
  * Virtual base class for the data type used to define transport configuration.
  * @ingroup RTPS_MODULE
  * */
-struct TransportDescriptorInterface
+struct RTPS_DllAPI TransportDescriptorInterface
 {
     TransportDescriptorInterface(uint32_t maximumMessageSize, uint32_t maximumInitialPeersRange)
         : maxMessageSize(maximumMessageSize)
