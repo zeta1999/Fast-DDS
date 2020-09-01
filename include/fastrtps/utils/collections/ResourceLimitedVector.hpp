@@ -461,7 +461,9 @@ public:
      *
      * @return const reference to the underlying collection.
      */
-    operator const collection_type& () const noexcept { return collection_; }
+    operator const collection_type& () const noexcept {
+        return collection_;
+    }
 
 protected:
 

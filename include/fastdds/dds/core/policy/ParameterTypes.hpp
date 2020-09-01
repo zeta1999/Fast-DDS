@@ -30,7 +30,7 @@
 #if HAVE_SECURITY
 #include <fastdds/rtps/security/accesscontrol/ParticipantSecurityAttributes.h>
 #include <fastdds/rtps/security/accesscontrol/EndpointSecurityAttributes.h>
-#endif
+#endif // if HAVE_SECURITY
 
 #include <string>
 #include <vector>
@@ -40,8 +40,8 @@ namespace eprosima {
 namespace fastrtps {
 namespace rtps {
 struct CDRMessage_t;
-}
-}
+} // namespace rtps
+} // namespace fastrtps
 
 namespace fastdds {
 namespace dds {
@@ -994,7 +994,7 @@ public:
 
     class iterator
     {
-public:
+    public:
 
         typedef iterator self_type;
         typedef ParameterProperty_t value_type;
@@ -1050,7 +1050,7 @@ public:
             return ptr_ != rhs.ptr_;
         }
 
-protected:
+    protected:
 
         /**
          * @brief Shift the pointer to the next value
@@ -1070,7 +1070,7 @@ protected:
             return ptr_;
         }
 
-private:
+    private:
 
         //!Pointer
         fastrtps::rtps::octet* ptr_;
@@ -1080,7 +1080,7 @@ private:
 
     class const_iterator
     {
-public:
+    public:
 
         typedef const_iterator self_type;
         typedef const ParameterProperty_t value_type;
@@ -1136,7 +1136,7 @@ public:
             return ptr_ != rhs.ptr_;
         }
 
-protected:
+    protected:
 
         /**
          * @brief Shift the pointer to the next value
@@ -1156,7 +1156,7 @@ protected:
             return ptr_;
         }
 
-private:
+    private:
 
         //!Pointer
         const fastrtps::rtps::octet* ptr_;
@@ -1570,7 +1570,7 @@ public:
 
 };
 
-#endif
+#endif // if HAVE_SECURITY
 
 ///@}
 
@@ -1578,5 +1578,5 @@ public:
 } //namespace fastdds
 } //namespace eprosima
 
-#endif
+#endif // ifndef DOXYGEN_SHOULD_SKIP_THIS_PUBLIC
 #endif // _FASTDDS_DDS_QOS_PARAMETERTYPES_HPP_
