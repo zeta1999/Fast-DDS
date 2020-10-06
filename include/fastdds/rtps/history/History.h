@@ -69,7 +69,7 @@ public:
      * @param[out] change Pointer to pointer to the CacheChange_t to reserve
      * @param[in] calculateSizeFunc Function to calculate the size of the payload.
      * @return True if reserved
-     * @warn This method has been deprecated and will be removed on v3.0.0
+     * @warning This method has been deprecated and will be removed on v3.0.0
      */
     FASTRTPS_DEPRECATED("Use new_change on RTPSWriter or reserveCache on RTPSReader")
     RTPS_DllAPI inline bool reserve_Cache(
