@@ -550,10 +550,23 @@ bool RTPSParticipantImpl::createWriter(
                 entityId);
         }
     }
+    // Check if also support persistence with TRANSIENT_LOCAL.
+    DurabilityKind_t durability_red_line = TRANSIENT;
+    if (!isBuiltin)
+    {
+        std::string* persistence_support_transient_local_property = PropertyPolicyHelper::find_property(
+            m_att.properties, "dds.persistence.also-support-transient-local");
+        if (nullptr != persistence_support_transient_local_property &&
+                0 == persistence_support_transient_local_property->compare("true"))
+        {
+            durability_red_line = TRANSIENT_LOCAL;
+        }
+    }
+
 
     // Get persistence service
     IPersistenceService* persistence = nullptr;
-    if (param.endpoint.durabilityKind >= TRANSIENT)
+    if (param.endpoint.durabilityKind >= durability_red_line)
     {
         if (param.endpoint.persistence_guid == c_Guid_Unknown)
         {
@@ -561,7 +574,7 @@ bool RTPSParticipantImpl::createWriter(
             return false;
         }
         persistence = get_persistence_service(param.endpoint);
-        if (persistence == nullptr)
+        if (persistence == nullptr && TRANSIENT <= param.endpoint.durabilityKind)
         {
             logError(RTPS_PARTICIPANT, "Couldn't create writer persistence service for transient/persistent writer");
             return false;
@@ -705,9 +718,21 @@ bool RTPSParticipantImpl::createReader(
         return false;
     }
 
+    // Check if also support persistence with TRANSIENT_LOCAL.
+    DurabilityKind_t durability_red_line = TRANSIENT;
+    if (!isBuiltin)
+    {
+        std::string* persistence_support_transient_local_property = PropertyPolicyHelper::find_property(
+            m_att.properties, "dds.persistence.also-support-transient-local");
+        if (nullptr != persistence_support_transient_local_property &&
+                0 == persistence_support_transient_local_property->compare("true"))
+        {
+            durability_red_line = TRANSIENT_LOCAL;
+        }
+    }
     // Get persistence service
     IPersistenceService* persistence = nullptr;
-    if (param.endpoint.durabilityKind >= TRANSIENT)
+    if (param.endpoint.durabilityKind >= durability_red_line)
     {
         // Check if persistence guid needs to be set from property
         if (param.endpoint.persistence_guid == c_Guid_Unknown)
@@ -735,7 +760,7 @@ bool RTPSParticipantImpl::createReader(
         }
 
         persistence = get_persistence_service(param.endpoint);
-        if (persistence == nullptr)
+        if (persistence == nullptr && TRANSIENT <= param.endpoint.durabilityKind)
         {
             logError(RTPS_PARTICIPANT, "Couldn't create persistence service for transient/persistent reader");
             return false;
